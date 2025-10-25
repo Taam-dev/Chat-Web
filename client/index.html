@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 0 - The Backrooms Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="static-noise"></div>
+    <div class="scan-line"></div>
+    
+    <div id="loginContainer" class="container">
+        <div class="glitch-wrapper">
+            <div class="login-box">
+                <h1 class="glitch" data-text="LEVEL 0">LEVEL 0</h1>
+                <p class="warning-text">⚠ UNAUTHORIZED ACCESS DETECTED ⚠</p>
+                <p class="subtitle">You've clipped through reality...</p>
+                
+                <div class="input-group">
+                    <label>USER IDENTIFICATION:</label>
+                    <input type="text" id="usernameInput" placeholder="Who are you...?" autocomplete="off">
+                    <div class="input-glow"></div>
+                </div>
+                
+                <button class="enter-btn" onclick="login()">
+                    <span class="btn-text">ENTER THE BACKROOMS</span>
+                    <span class="btn-glitch">ENTER THE BACKROOMS</span>
+                </button>
+                
+                <p class="warning-bottom">Warning: No way back</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="chatContainer" class="container" style="display: none;">
+        <div class="backrooms-wrapper">
+            <div class="levels-sidebar">
+                <div class="levels-header">
+                    <h3 class="distorted">LEVELS</h3>
+                    <div class="signal-indicator">
+                        <span class="signal-dot"></span>
+                        <span class="signal-text">SIGNAL: WEAK</span>
+                    </div>
+                </div>
+                
+                <div class="levels-list">
+                    <div class="level-item active" onclick="selectChannel('level-0')">
+                        <span class="level-number">0</span>
+                        <span class="level-name">The Lobby</span>
+                        <span class="danger-level">SAFE</span>
+                    </div>
+                    <div class="level-item" onclick="selectChannel('level-1')">
+                        <span class="level-number">1</span>
+                        <span class="level-name">Habitable Zone</span>
+                        <span class="danger-level">UNSAFE</span>
+                    </div>
+                    <div class="level-item" onclick="selectChannel('level-2')">
+                        <span class="level-number">2</span>
+                        <span class="level-name">Pipe Dreams</span>
+                        <span class="danger-level">DANGER</span>
+                    </div>
+                    <div class="level-item" onclick="selectChannel('level-???????')">
+                        <span class="level-number">??????</span>
+                        <span class="level-name">????????????</span>
+                        <span class="danger-level">??????</span>
+                    </div>
+                </div>
+                
+                <div class="entities-section">
+                    <h4 class="section-title">ENTITIES DETECTED</h4>
+                    <div id="usersList" class="entities-list"></div>
+                </div>
+                
+                <div class="status-panel">
+                    <div class="user-status">
+                        <span class="status-label">ENTITY:</span>
+                        <span id="currentUsername">Unknown</span>
+                    </div>
+                    <div class="sanity-meter">
+                        <span class="status-label">SANITY:</span>
+                        <div class="meter-bar">
+                            <div class="meter-fill" id="sanityBar"></div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="location.reload()">
+                        <i class="fas fa-door-open"></i> ESCAPE
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-area">
+                <div class="chat-header">
+                    <div class="level-info">
+                        <h2 id="channelName" class="current-level">LEVEL 0</h2>
+                        <p class="level-description">The endless yellow rooms...</p>
+                    </div>
+                    <div class="interference">
+                        <span class="time" id="currentTime"></span>
+                        <span class="coordinates">X: ??? Y: ??? Z: ???</span>
+                    </div>
+                </div>
+
+                <div class="messages-container" id="messagesContainer">
+                    <div class="system-alert">
+                        <p>⚠ COMMUNICATION SYSTEM ONLINE</p>
+                        <p>Signal strength: 23%</p>
+                        <p>Entity detection: ACTIVE</p>
+                    </div>
+                </div>
+
+                <div id="typingIndicator" class="typing-indicator" style="display: none;">
+                    <span class="typing-text"></span>
+                    <div class="typing-static">▓▒░ ░▒▓</div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <input type="text" id="messageInput" placeholder="Transmit message..." autocomplete="off">
+                        <button id="actionBtn" class="action-btn" onclick="toggleEmojiOrSend()">
+                            <i class="far fa-face-fearful" id="actionIcon"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="emojiPicker" class="emoji-picker" style="display: none;">
+                        <div class="emoji-header">EMOTIONAL STATES</div>
+                        <div class="emoji-grid">
+                            <span onclick="addEmoji('😱')">😱</span>
+                            <span onclick="addEmoji('😰')">😰</span>
+                            <span onclick="addEmoji('😨')">😨</span>
+                            <span onclick="addEmoji('🫨')">🫨</span>
+                            <span onclick="addEmoji('😵')">😵</span>
+                            <span onclick="addEmoji('💀')">💀</span>
+                            <span onclick="addEmoji('👻')">👻</span>
+                            <span onclick="addEmoji('👁️')">👁️</span>
+                            <span onclick="addEmoji('🔦')">🔦</span>
+                            <span onclick="addEmoji('🚪')">🚪</span>
+                            <span onclick="addEmoji('🏃')">🏃</span>
+                            <span onclick="addEmoji('🆘')">🆘</span>
+                            <span onclick="addEmoji('⚠️')">⚠️</span>
+                            <span onclick="addEmoji('☠️')">☠️</span>
+                            <span onclick="addEmoji('🌀')">🌀</span>
+                            <span onclick="addEmoji('🕳️')">🕳️</span>
+                            <span onclick="addEmoji('🪜')">🪜</span>
+                            <span onclick="addEmoji('📻')">📻</span>
+                            <span onclick="addEmoji('🔌')">🔌</span>
+                            <span onclick="addEmoji('💡')">💡</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
